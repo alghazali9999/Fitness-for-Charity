@@ -25,27 +25,16 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController textsPageController = PageController();
   int page = 0;
 
-<<<<<<< HEAD
-
-  Map<String, dynamic>? _weather;
-  bool _loadingWeather = true;
-
-=======
   Map<String, dynamic>? _weather;
   bool _loadingWeather = true;
 
   // DB related
   late Future<List<Map<String, dynamic>>> _futureCards;
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
 
   @override
   void initState() {
     super.initState();
     _fetchWeather();
-<<<<<<< HEAD
-  }
-
-=======
     _loadCards();
     _ensureSampleData();
   }
@@ -64,7 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
 
   Future<void> _fetchWeather() async {
     try {
@@ -82,8 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-<<<<<<< HEAD
-=======
   Future<void> _insertSampleData() async {
     await DBHelper.instance
         .insertAuthor({'name': 'Dr Babak', 'avatar': 'assets/avatar1.png'});
@@ -178,7 +164,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
 
   @override
   Widget build(BuildContext context) {
@@ -207,354 +192,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: PageView(
           controller: mainPageController,
           children: [
-<<<<<<< HEAD
-            O3D(
-              key: ValueKey(modelPath),
-              src: modelPath,
-              controller: o3dController,
-              ar: false,
-              autoPlay: true,
-              autoRotate: false,
-              cameraControls: false,
-              cameraTarget: genderProvider.gender == 'male'
-                  ? CameraTarget(-.25, 1.5, 0)
-                  : CameraTarget(-.25, 1.5, 1.5),
-              cameraOrbit: CameraOrbit(0, 90, 1),
-            ),
-            PageView(
-              controller: mainPageController,
-              children: [
-                ListView.builder(
-                  padding: EdgeInsets.fromLTRB(12, height * 0.8, 12, 100),
-                  itemCount: 100,
-                  itemBuilder: (context, index) => Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.asset(
-                            'assets/image1.jpg',
-                            fit: BoxFit.cover,
-                            width: 70,
-                            height: 70,
-                          ),
-                          const Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'A simple way to stay healthy',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Dr Babak',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const Icon(
-                            Icons.location_on,
-                            color: Colors.red,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                ListView.builder(
-                  padding: EdgeInsets.fromLTRB(12, height * 0.8, 12, 100),
-                  itemCount: 100,
-                  itemBuilder: (context, index) => Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.asset(
-                            'assets/image2.jpg',
-                            fit: BoxFit.cover,
-                            width: 70,
-                            height: 70,
-                          ),
-                          const Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '10:24',
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 12),
-                                  ),
-                                  Text(
-                                    'Morning walk',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    '2 km in 30min',
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const Icon(
-                            Icons.directions_walk_rounded,
-                            color: Colors.red,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                ClipPath(
-                    clipper: InvertedCircleClipper(),
-                    child: Container(
-                      color: Colors.white,
-                    ),
-                  )
-              ],
-            ),
-            Container(
-              width: 100,
-              height: double.infinity,
-              margin: const EdgeInsets.all(12),
-              child: PageView(
-                controller: textsPageController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  Column(
-                    children: [
-                      const SizedBox(
-                        width: double.infinity,
-                        child: FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: Text("Daily goals"),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          children: [
-                            const Expanded(
-                              child: FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Text("87"),
-                              ),
-                            ),
-                            Transform.translate(
-                                offset: const Offset(0, 20),
-                                child: const Text("%"))
-                          ],
-                        ),
-                      ),
-                      const Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Icon(Icons.local_fire_department_outlined,
-                                color: Colors.red),
-                          ),
-                          Expanded(
-                              child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("1,840"),
-                              Text(
-                                "calories",
-                                style:
-                                    TextStyle(fontSize: 12, color: Colors.grey),
-                              ),
-                            ],
-                          ))
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      const Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child:
-                                Icon(Icons.do_not_step, color: Colors.purple),
-                          ),
-                          Expanded(
-                              child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("3,480"),
-                              Text(
-                                "steps",
-                                style:
-                                    TextStyle(fontSize: 12, color: Colors.grey),
-                              ),
-                            ],
-                          ))
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      const Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Icon(Icons.hourglass_bottom,
-                                color: Colors.lightBlueAccent),
-                          ),
-                          Expanded(
-                              child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("6.5"),
-                              Text(
-                                "hours",
-                                style:
-                                    TextStyle(fontSize: 12, color: Colors.grey),
-                              ),
-                            ],
-                          ))
-                        ],
-                      ),
-                    ],
-                  ),
-
-
-                  Builder(
-                    builder: (context) {
-                      if (_loadingWeather) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (_weather == null) {
-                        return const Center(child: Text('Failed to load weather'));
-                      }
-
-                      final temp = _weather!['temperature'];
-                      final wind = _weather!['windspeed'];
-                      final code = _weather!['weathercode'];
-
-                      return Column(
-                        children: [
-                            SizedBox(
-                              width: double.infinity,
-                              child: FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Text(
-                                   "${temp?.toStringAsFixed(0) ?? temp}°C",
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Icon(iconFromWeatherCode(code), size: 18, color: Colors.blueGrey),
-                                  const SizedBox(width: 6),
-                                  Expanded(
-                                    child: FittedBox(
-                                      fit: BoxFit.fitWidth,
-                                      child: Text(
-                                        "Wind ${wind?.toStringAsFixed(0) ?? wind} km/h",
-                                        style: const TextStyle(fontSize: 12, color: Colors.grey),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                              const SizedBox(height: 6),
-
-                            // Keterangan kecil di bawah (kode cuaca)
-                            Text(
-                              "Code $code",
-                              style: const TextStyle(fontSize: 12, color: Colors.grey),
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-
-                  // Column(
-                  //   children: [
-                  //     const SizedBox(
-                  //       width: double.infinity,
-                  //       child: FittedBox(
-                  //         fit: BoxFit.fitWidth,
-                  //         child: Text("Journal"),
-                  //       ),
-                  //     ),
-                  //     SizedBox(
-                  //       width: double.infinity,
-                  //       child: Row(
-                  //         children: [
-                  //           Transform.translate(
-                  //               offset: const Offset(0, 20),
-                  //               child: const Text("<")),
-                  //           const Expanded(
-                  //             child: FittedBox(
-                  //               fit: BoxFit.fitWidth,
-                  //               child: Text("12"),
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //     const Text(
-                  //       "July 2020",
-                  //       style: TextStyle(fontSize: 12, color: Colors.grey),
-                  //     ),
-                  //   ],
-                  // ),
-
-
-                  const Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: Text("Profile"),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: Text("Dis"),
-                        ),
-                      ),
-                      Text(
-                        "23 years old",
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 16,
-              right: 16,
-              child: IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsScreen(),
-=======
             // PAGE 1
             FutureBuilder<List<Map<String, dynamic>>>(
               future: _futureCards,
@@ -771,7 +408,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
                     ),
 
                     // cards list

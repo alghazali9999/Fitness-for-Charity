@@ -11,40 +11,20 @@ class DBHelper {
 
   Database? _db;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   Future<Database> get database async {
     _db ??= await _initDatabase();
-=======
-  Future<Database> get db async {
-    if (_db != null) return _db!;
-    _db = await init();
->>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
-=======
-  Future<Database> get database async {
-    _db ??= await _initDatabase();
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
     return _db!;
   }
 
   Future<Database> _initDatabase() async {
-<<<<<<< HEAD
     // NOTE: bump version to 3 for user schema changes
     const dbVersion = 3;
 
     if (kIsWeb) {
-<<<<<<< HEAD
-=======
-    // NOTE: bump version to 2 so onUpgrade will run if DB exists
-    const dbVersion = 2;
-
-    if (kIsWeb) {
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
       // Web
       databaseFactory = databaseFactoryFfiWeb;
       return await databaseFactory.openDatabase(
         'auth_web.db',
-<<<<<<< HEAD
         options: OpenDatabaseOptions(
           version: dbVersion,
           onCreate: _onCreate,
@@ -62,114 +42,30 @@ class DBHelper {
           version: dbVersion,
           onCreate: _onCreate,
           onUpgrade: _onUpgrade,
-=======
-      final factory = databaseFactoryFfiWeb;
-      return await factory.openDatabase(
-        'auth.db',
-        options: OpenDatabaseOptions(
-          version: 2, // 🔺 bump version to trigger onUpgrade if needed
-          onCreate: (db, version) async {
-            await db.execute('''
-              CREATE TABLE users(
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                email TEXT UNIQUE,
-                password TEXT,
-                username TEXT,
-                country TEXT
-              )
-            ''');
-          },
-          onUpgrade: (db, oldVersion, newVersion) async {
-            if (oldVersion < 2) {
-              await db.execute('ALTER TABLE users ADD COLUMN username TEXT');
-              await db.execute('ALTER TABLE users ADD COLUMN country TEXT');
-            }
-          },
->>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
-=======
-        options: OpenDatabaseOptions(
-          version: dbVersion,
-          onCreate: _onCreate,
-          onUpgrade: _onUpgrade,
-        ),
-      );
-    } else if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      // Desktop
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
-      final dbPath = await databaseFactory.getDatabasesPath();
-      return await databaseFactory.openDatabase(
-        join(dbPath, 'auth_desktop.db'),
-        options: OpenDatabaseOptions(
-          version: dbVersion,
-          onCreate: _onCreate,
-          onUpgrade: _onUpgrade,
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
         ),
       );
     } else {
       // Android / iOS
       final dbPath = await getDatabasesPath();
-<<<<<<< HEAD
-<<<<<<< HEAD
       return await openDatabase(
         join(dbPath, 'auth.db'),
         version: dbVersion,
         onCreate: _onCreate,
         onUpgrade: _onUpgrade,
-=======
-      final path = join(dbPath, 'auth.db');
-      return await openDatabase(
-        path,
-        version: 2, // 🔺 bump version
-        onCreate: (db, version) async {
-          await db.execute('''
-            CREATE TABLE users(
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              email TEXT UNIQUE,
-              password TEXT,
-              username TEXT,
-              country TEXT
-            )
-          ''');
-        },
-        onUpgrade: (db, oldVersion, newVersion) async {
-          if (oldVersion < 2) {
-            await db.execute('ALTER TABLE users ADD COLUMN username TEXT');
-            await db.execute('ALTER TABLE users ADD COLUMN country TEXT');
-          }
-        },
->>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
-=======
-      return await openDatabase(
-        join(dbPath, 'auth.db'),
-        version: dbVersion,
-        onCreate: _onCreate,
-        onUpgrade: _onUpgrade,
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
       );
     }
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   Future<void> _onCreate(Database db, int version) async {
     // users table with new fields
-=======
-  Future<void> _onCreate(Database db, int version) async {
-    // existing users table
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
     await db.execute('''
       CREATE TABLE users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT UNIQUE,
-<<<<<<< HEAD
         password TEXT,
         username TEXT,
-        country TEXT
-=======
-        password TEXT
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
+        country TEXT,
+        gender TEXT
       )
     ''');
 
@@ -248,13 +144,13 @@ class DBHelper {
         )
       ''');
     }
-<<<<<<< HEAD
     
     // v3: add username and country to users table
     if (oldVersion < 3) {
       try {
         await db.execute('ALTER TABLE users ADD COLUMN username TEXT');
         await db.execute('ALTER TABLE users ADD COLUMN country TEXT');
+        await db.execute('ALTER TABLE users ADD COLUMN gender TEXT');
       } catch (e) {
         // Handle error if columns already exist, etc. For simplicity, just print.
         debugPrint("Error upgrading users table: $e");
@@ -263,48 +159,24 @@ class DBHelper {
   }
 
   // --------- User functions (updated) ----------
-  Future<bool> createUser(String email, String password, String username, String country) async {
+  Future<bool> createUser(String email, String password, String username, String country, String gender) async {
     try {
       final dbClient = await database;
-=======
-  // 🔹 Create user with username and country
-  Future<bool> createUser(
-      String email, String password, String username, String country) async {
-    try {
-      final dbClient = await db;
->>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
-=======
-  }
-
-  // --------- User functions (kept) ----------
-  Future<bool> createUser(String email, String password) async {
-    try {
-      final dbClient = await database;
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
       final id = await dbClient.insert('users', {
         'email': email,
         'password': password,
+        'username': username,
+        'country': country,
+        'gender': gender,
       });
       return id > 0;
     } catch (e) {
-<<<<<<< HEAD
-<<<<<<< HEAD
       debugPrint('Error createUser: $e');
-=======
-      print('Error creating user: $e');
->>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
-=======
-      debugPrint('Error createUser: $e');
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
       return false;
     }
   }
 
   Future<bool> userExists(String email) async {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
     final dbClient = await database;
     final result = await dbClient.query(
       'users',
@@ -312,36 +184,15 @@ class DBHelper {
       whereArgs: [email],
     );
     return result.isNotEmpty;
-<<<<<<< HEAD
-=======
-    final dbClient = await db;
-    final res =
-        await dbClient.query('users', where: 'email = ?', whereArgs: [email]);
-    return res.isNotEmpty;
->>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
-=======
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
   }
 
   Future<bool> validateUser(String email, String password) async {
-<<<<<<< HEAD
-<<<<<<< HEAD
     final dbClient = await database;
     final result = await dbClient.query(
-=======
-    final dbClient = await db;
-    final res = await dbClient.query(
->>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
-=======
-    final dbClient = await database;
-    final result = await dbClient.query(
->>>>>>> 080e57c (penerapan SQFlite dan Future builder untuk menampilkan data event)
       'users',
       where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
-<<<<<<< HEAD
-<<<<<<< HEAD
     return result.isNotEmpty;
   }
 

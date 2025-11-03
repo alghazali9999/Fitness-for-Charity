@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:provider/provider.dart';
 
 import '../database/database_helper.dart';
 import '../main.dart';
+import '../provider/gender_provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -142,6 +144,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final conf = _confirmC.text;
     final username = _usernameC.text.trim();
     final country = _selectedCountry ?? '';
+    final gender = Provider.of<GenderProvider>(context, listen: false).gender;
+
 
     if (email.isEmpty || pass.isEmpty || username.isEmpty || country.isEmpty) {
       messengerKey.currentState?.showSnackBar(
@@ -171,7 +175,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
 
       final created =
-          await DBHelper.instance.createUser(email, pass, username, country);
+          await DBHelper.instance.createUser(email, pass, username, country, gender);
 
       setState(() => _loading = false);
 
@@ -235,6 +239,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     onChanged: (value) =>
                         setState(() => _selectedCountry = value),
                   ),
+            const SizedBox(height: 12),
+            Consumer<GenderProvider>(
+              builder: (context, genderProvider, child) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Gender:'),
+                    Radio<String>(
+                      value: 'male',
+                      groupValue: genderProvider.gender,
+                      onChanged: (value) {
+                        if (value != null) {
+                          genderProvider.setGender(value);
+                        }
+                      },
+                    ),
+                    const Text('Male'),
+                    Radio<String>(
+                      value: 'female',
+                      groupValue: genderProvider.gender,
+                      onChanged: (value) {
+                        if (value != null) {
+                          genderProvider.setGender(value);
+                        }
+                      },
+                    ),
+                    const Text('Female'),
+                  ],
+                );
+              },
+            ),
             const SizedBox(height: 12),
             TextField(
               controller: _emailC,
