@@ -1,6 +1,5 @@
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
@@ -17,8 +16,8 @@ class DBHelper {
   }
 
   Future<Database> _initDatabase() async {
-    // NOTE: bump version to 2 so onUpgrade will run if DB exists
-    const dbVersion = 2;
+    // NOTE: bump version to 3 for user schema changes
+    const dbVersion = 3;
 
     if (kIsWeb) {
       // Web
@@ -57,12 +56,15 @@ class DBHelper {
   }
 
   Future<void> _onCreate(Database db, int version) async {
-    // existing users table
+    // users table with new fields
     await db.execute('''
       CREATE TABLE users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT UNIQUE,
-        password TEXT
+        email TEXT UNIQWUE,
+        password TEXT,
+        username TEXT,
+        country TEXT,
+        gender TEXT
       )
     ''');
 
@@ -141,15 +143,31 @@ class DBHelper {
         )
       ''');
     }
+
+    // v3: add username and country to users table
+    if (oldVersion < 3) {
+      try {
+        await db.execute('ALTER TABLE users ADD COLUMN username TEXT');
+        await db.execute('ALTER TABLE users ADD COLUMN country TEXT');
+        await db.execute('ALTER TABLE users ADD COLUMN gender TEXT');
+      } catch (e) {
+        // Handle error if columns already exist, etc. For simplicity, just print.
+        debugPrint("Error upgrading users table: $e");
+      }
+    }
   }
 
-  // --------- User functions (kept) ----------
-  Future<bool> createUser(String email, String password) async {
+  // --------- User functions (updated) ----------
+  Future<bool> createUser(String email, String password, String username,
+      String country, String gender) async {
     try {
       final dbClient = await database;
       final id = await dbClient.insert('users', {
         'email': email,
         'password': password,
+        'username': username,
+        'country': country,
+        'gender': gender,
       });
       return id > 0;
     } catch (e) {
@@ -182,24 +200,28 @@ class DBHelper {
   Future<int> insertAuthor(Map<String, dynamic> author) async {
     final dbClient = await database;
     // ignore conflicts (if same name) to avoid duplicates
-    return await dbClient.insert('authors', author, conflictAlgorithm: ConflictAlgorithm.ignore);
+    return await dbClient.insert('authors', author,
+        conflictAlgorithm: ConflictAlgorithm.ignore);
   }
 
   Future<int> insertCategory(Map<String, dynamic> category) async {
     final dbClient = await database;
-    return await dbClient.insert('categories', category, conflictAlgorithm: ConflictAlgorithm.ignore);
+    return await dbClient.insert('categories', category,
+        conflictAlgorithm: ConflictAlgorithm.ignore);
   }
 
   Future<int?> getCategoryIdByName(String name) async {
     final db = await database;
-    final res = await db.query('categories', where: 'name = ?', whereArgs: [name], limit: 1);
+    final res = await db.query('categories',
+        where: 'name = ?', whereArgs: [name], limit: 1);
     if (res.isEmpty) return null;
     return res.first['id'] as int?;
   }
 
   Future<int?> getAuthorIdByName(String name) async {
     final db = await database;
-    final res = await db.query('authors', where: 'name = ?', whereArgs: [name], limit: 1);
+    final res = await db.query('authors',
+        where: 'name = ?', whereArgs: [name], limit: 1);
     if (res.isEmpty) return null;
     return res.first['id'] as int?;
   }
@@ -222,7 +244,8 @@ class DBHelper {
 
   Future<int> updateCard(int id, Map<String, dynamic> values) async {
     final dbClient = await database;
-    return await dbClient.update('cards', values, where: 'id = ?', whereArgs: [id]);
+    return await dbClient
+        .update('cards', values, where: 'id = ?', whereArgs: [id]);
   }
 
   Future<int> deleteCard(int id) async {
@@ -232,18 +255,21 @@ class DBHelper {
 
   Future<int> setFavorite(int id, bool fav) async {
     final dbClient = await database;
-    return await dbClient.update('cards', {'favorite': fav ? 1 : 0}, where: 'id = ?', whereArgs: [id]);
+    return await dbClient.update('cards', {'favorite': fav ? 1 : 0},
+        where: 'id = ?', whereArgs: [id]);
   }
 
   Future<Map<String, dynamic>?> getCardById(int id) async {
     final db = await database;
-    final res = await db.query('cards', where: 'id = ?', whereArgs: [id], limit: 1);
+    final res =
+        await db.query('cards', where: 'id = ?', whereArgs: [id], limit: 1);
     if (res.isEmpty) return null;
     return res.first;
   }
 
   // returns rows with author_name and category_name included
-  Future<List<Map<String, dynamic>>> getCardsWithMeta({String? search, bool onlyFav = false}) async {
+  Future<List<Map<String, dynamic>>> getCardsWithMeta(
+      {String? search, bool onlyFav = false}) async {
     final dbClient = await database;
     final whereParts = <String>[];
     final whereArgs = <dynamic>[];
@@ -257,7 +283,8 @@ class DBHelper {
       whereParts.add('c.favorite = 1');
     }
 
-    final whereClause = whereParts.isEmpty ? '' : 'WHERE ${whereParts.join(' AND ')}';
+    final whereClause =
+        whereParts.isEmpty ? '' : 'WHERE ${whereParts.join(' AND ')}';
 
     final sql = '''
       SELECT c.*, a.name AS author_name, a.avatar AS author_avatar, cat.name AS category_name
