@@ -11,8 +11,14 @@ class DBHelper {
 
   Database? _db;
 
+<<<<<<< HEAD
   Future<Database> get database async {
     _db ??= await _initDatabase();
+=======
+  Future<Database> get db async {
+    if (_db != null) return _db!;
+    _db = await init();
+>>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
     return _db!;
   }
 
@@ -21,6 +27,7 @@ class DBHelper {
     const dbVersion = 3;
 
     if (kIsWeb) {
+<<<<<<< HEAD
       // Web
       databaseFactory = databaseFactoryFfiWeb;
       return await databaseFactory.openDatabase(
@@ -42,20 +49,69 @@ class DBHelper {
           version: dbVersion,
           onCreate: _onCreate,
           onUpgrade: _onUpgrade,
+=======
+      final factory = databaseFactoryFfiWeb;
+      return await factory.openDatabase(
+        'auth.db',
+        options: OpenDatabaseOptions(
+          version: 2, // 🔺 bump version to trigger onUpgrade if needed
+          onCreate: (db, version) async {
+            await db.execute('''
+              CREATE TABLE users(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE,
+                password TEXT,
+                username TEXT,
+                country TEXT
+              )
+            ''');
+          },
+          onUpgrade: (db, oldVersion, newVersion) async {
+            if (oldVersion < 2) {
+              await db.execute('ALTER TABLE users ADD COLUMN username TEXT');
+              await db.execute('ALTER TABLE users ADD COLUMN country TEXT');
+            }
+          },
+>>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
         ),
       );
     } else {
       // Android / iOS
       final dbPath = await getDatabasesPath();
+<<<<<<< HEAD
       return await openDatabase(
         join(dbPath, 'auth.db'),
         version: dbVersion,
         onCreate: _onCreate,
         onUpgrade: _onUpgrade,
+=======
+      final path = join(dbPath, 'auth.db');
+      return await openDatabase(
+        path,
+        version: 2, // 🔺 bump version
+        onCreate: (db, version) async {
+          await db.execute('''
+            CREATE TABLE users(
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              email TEXT UNIQUE,
+              password TEXT,
+              username TEXT,
+              country TEXT
+            )
+          ''');
+        },
+        onUpgrade: (db, oldVersion, newVersion) async {
+          if (oldVersion < 2) {
+            await db.execute('ALTER TABLE users ADD COLUMN username TEXT');
+            await db.execute('ALTER TABLE users ADD COLUMN country TEXT');
+          }
+        },
+>>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
       );
     }
   }
 
+<<<<<<< HEAD
   Future<void> _onCreate(Database db, int version) async {
     // users table with new fields
     await db.execute('''
@@ -160,6 +216,13 @@ class DBHelper {
   Future<bool> createUser(String email, String password, String username, String country) async {
     try {
       final dbClient = await database;
+=======
+  // 🔹 Create user with username and country
+  Future<bool> createUser(
+      String email, String password, String username, String country) async {
+    try {
+      final dbClient = await db;
+>>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
       final id = await dbClient.insert('users', {
         'email': email,
         'password': password,
@@ -168,12 +231,18 @@ class DBHelper {
       });
       return id > 0;
     } catch (e) {
+<<<<<<< HEAD
       debugPrint('Error createUser: $e');
+=======
+      print('Error creating user: $e');
+>>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
       return false;
     }
   }
 
+  // 🔹 Check if user exists
   Future<bool> userExists(String email) async {
+<<<<<<< HEAD
     final dbClient = await database;
     final result = await dbClient.query(
       'users',
@@ -181,15 +250,28 @@ class DBHelper {
       whereArgs: [email],
     );
     return result.isNotEmpty;
+=======
+    final dbClient = await db;
+    final res =
+        await dbClient.query('users', where: 'email = ?', whereArgs: [email]);
+    return res.isNotEmpty;
+>>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
   }
 
+  // 🔹 Validate login (email + password)
   Future<bool> validateUser(String email, String password) async {
+<<<<<<< HEAD
     final dbClient = await database;
     final result = await dbClient.query(
+=======
+    final dbClient = await db;
+    final res = await dbClient.query(
+>>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
       'users',
       where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
+<<<<<<< HEAD
     return result.isNotEmpty;
   }
 
@@ -290,5 +372,17 @@ class DBHelper {
   // convenience search wrapper
   Future<List<Map<String, dynamic>>> searchCards(String query) async {
     return await getCardsWithMeta(search: query);
+=======
+    return res.isNotEmpty;
+>>>>>>> d09d05f (API fetch from web Country list (restcountry)dan Password strength (Have I Been Pwned)untuk sign up)
+  }
+
+  // 🔹 Get user info (optional helper)
+  Future<Map<String, dynamic>?> getUser(String email) async {
+    final dbClient = await db;
+    final res =
+        await dbClient.query('users', where: 'email = ?', whereArgs: [email]);
+    if (res.isNotEmpty) return res.first;
+    return null;
   }
 }
