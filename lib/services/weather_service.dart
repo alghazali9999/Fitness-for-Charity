@@ -1,7 +1,12 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> bb19531 (fix: merge)
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class WeatherService {
+<<<<<<< HEAD
   Future<Map<String, dynamic>?> getWeather(
       {double lat = 3.5952, double lon = 98.6722}) async {
         
@@ -30,4 +35,16 @@ class WeatherService {
     'medan': {'lat': 3.5952, 'lon': 98.6722},
     'jakarta': {'lat': -6.2000, 'lon': 106.8166},
   };
+=======
+  Future<Map<String, dynamic>> getWeather() async {
+    // Replace with a real API call
+    await Future.delayed(const Duration(seconds: 1));
+    return {
+      "weather": [
+        {"main": "Clear", "icon": "01d"}
+      ],
+      "main": {"temp": 25.0}
+    };
+  }
+>>>>>>> bb19531 (fix: merge)
 }
