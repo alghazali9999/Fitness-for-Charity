@@ -40,7 +40,9 @@ dependencies:
   sqflite_common_ffi: ^2.3.6
   shared_preferences: ^2.5.3
   provider: ^6.1.5+1
-
+  http: ^1.2.1
+  crypto: ^3.0.3
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:
