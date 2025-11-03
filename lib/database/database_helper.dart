@@ -257,7 +257,7 @@ class DBHelper {
       whereParts.add('c.favorite = 1');
     }
 
-    final whereClause = whereParts.isEmpty ? '' : 'WHERE ' + whereParts.join(' AND ');
+    final whereClause = whereParts.isEmpty ? '' : 'WHERE ${whereParts.join(' AND ')}';
 
     final sql = '''
       SELECT c.*, a.name AS author_name, a.avatar AS author_avatar, cat.name AS category_name

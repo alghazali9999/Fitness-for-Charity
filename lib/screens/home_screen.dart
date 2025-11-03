@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import 'package:o3d/o3d.dart';
@@ -5,7 +6,6 @@ import 'package:project_3d/provider/gender_provider.dart';
 import 'package:project_3d/screens/settings_screen.dart';
 import 'package:project_3d/services/weather_service.dart';
 import 'package:provider/provider.dart';
-import 'package:project_3d/utils/weather_icons.dart';
 
 import '../inverted_circle_clipper.dart';
 import 'package:project_3d/database/database_helper.dart';
@@ -169,9 +169,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;
     // header total height (tweak if needed)
-    final double headerHeight = 420;
+    const double headerHeight = 420;
     // left column width for stats (prevent the number from expanding too big)
-    final double leftColumnWidth = 140;
+    const double leftColumnWidth = 140;
 
     final genderProvider = Provider.of<GenderProvider>(context);
 
@@ -215,18 +215,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                   // Left fixed-width column for stats (so number doesn't expand)
                                   SizedBox(
                                     width: leftColumnWidth,
-                                    child: Column(
+                                    child: const Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text('Daily goals',
+                                        Text('Daily goals',
                                             style: TextStyle(fontSize: 16)),
-                                        const SizedBox(height: 8),
+                                        SizedBox(height: 8),
                                         // big number - fixed font size (not FittedBox)
                                         Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
-                                          children: const [
+                                          children: [
                                             Text('87',
                                                 style: TextStyle(
                                                     fontSize: 48,
@@ -242,9 +242,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 8),
+                                        SizedBox(height: 8),
                                         // small stats
-                                        const Row(
+                                        Row(
                                           children: [
                                             Padding(
                                               padding:
@@ -272,8 +272,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 6),
-                                        const Row(
+                                        SizedBox(height: 6),
+                                        Row(
                                           children: [
                                             Padding(
                                               padding:
@@ -299,8 +299,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 6),
-                                        const Row(
+                                        SizedBox(height: 6),
+                                        Row(
                                           children: [
                                             Padding(
                                               padding:
@@ -405,13 +405,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     // cards list
                     rows.isEmpty
-                        ? SliverToBoxAdapter(
+                        ? const SliverToBoxAdapter(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
+                              padding: EdgeInsets.symmetric(
                                   horizontal: 12.0, vertical: 24),
                               child: Card(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(24.0),
+                                  padding: EdgeInsets.all(24.0),
                                   child:
                                       Center(child: Text('Tidak ada event.')),
                                 ),
