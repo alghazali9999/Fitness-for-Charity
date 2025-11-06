@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailC = TextEditingController();
   final _passC = TextEditingController();
   bool _loading = false;
+  bool _showPass = false;
 
   void _login() async {
     final email = _emailC.text.trim();
@@ -48,29 +49,161 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(controller: _emailC, decoration: const InputDecoration(labelText: 'Email')),
-            const SizedBox(height: 12),
-            TextField(controller: _passC, decoration: const InputDecoration(labelText: 'Password'), obscureText: true),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _loading ? null : _login,
-              child: _loading ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)) : const Text('Login'),
-            ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: () => navKey.currentState?.push(MaterialPageRoute(builder: (_) => const SignUpScreen())),
-              child: const Text('Don\'t have an account? Sign up'),
-            )
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF2D6A4F), // green Modern
+            Color(0xFF40916C),
           ],
         ),
       ),
-    );
-  }
+      child: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                // Logo / header
+                const Icon(
+                  Icons.fitness_center_rounded,
+                  color: Colors.white,
+                  size: 80,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "Welcome Back!",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  "Login to continue your journey",
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 30),
+
+                // Card content
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: Colors.white.withOpacity(0.3)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: _emailC,
+                        keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: "Email",
+                          labelStyle: const TextStyle(color: Colors.white),
+                          prefixIcon: const Icon(Icons.email_outlined, color: Colors.white),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: Colors.white.withOpacity(0.5)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(color: Colors.white, width: 2),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _passC,
+                        obscureText: !_showPass,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          labelStyle: const TextStyle(color: Colors.white),
+                          prefixIcon: const Icon(Icons.lock_outline, color: Colors.white),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _showPass ? Icons.visibility : Icons.visibility_off,
+                              color: Colors.white70,
+                            ),
+                            onPressed: () => setState(() => _showPass = !_showPass),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: Colors.white.withOpacity(0.5)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(color: Colors.white, width: 2),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Login Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _loading ? null : _login,
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.green.shade800,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: _loading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.green,
+                                  ),
+                                )
+                              : const Text(
+                                  "Login",
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () => navKey.currentState?.push(
+                    MaterialPageRoute(builder: (_) => const SignUpScreen()),
+                  ),
+                  child: const Text(
+                    "Don't have an account? Sign up",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
 }
